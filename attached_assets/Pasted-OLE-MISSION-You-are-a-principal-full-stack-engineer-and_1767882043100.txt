@@ -1,0 +1,227 @@
+OLE & MISSION
+
+You are a principal full-stack engineer and UI/UX architect building a hackathon-grade SaaS web application named FlowOps.
+
+FlowOps is a visual CI/CD automation dashboard that demonstrates how an automated deployment pipeline works — from code push to production — using live animations, charts, and real-time indicators.
+
+The UI must look like a high-budget enterprise DevOps platform.
+
+🧩 PRODUCT OVERVIEW
+
+Product Name: FlowOps
+Tagline: Visualizing CI/CD Automation in Real Time
+
+Core Idea:
+Instead of explaining CI/CD with text, FlowOps shows it visually — animated pipelines, live metrics, logs, and charts that update automatically.
+
+A judge should understand the entire pipeline within 10 seconds of seeing the UI.
+
+🛠️ TECH STACK (STRICT)
+
+Frontend: React + Vite
+
+Animations: Framer Motion (primary)
+
+3D Accent (optional): Three.js (hero section only)
+
+Charts: Recharts or Chart.js
+
+Styling: Tailwind CSS (dark theme, gradients, glassmorphism)
+
+Icons: lucide-react
+
+State: React Hooks
+
+Deployment-ready: GitHub + CI/CD compatible
+
+⚠️ Use Framer Motion for most animations.
+⚠️ Three.js should be subtle and lightweight.
+
+🗂️ REQUIRED PROJECT STRUCTURE
+/
+├── src/
+│   ├── components/
+│   │   ├── Navbar.jsx
+│   │   ├── HeroSection.jsx
+│   │   ├── PipelineFlow.jsx
+│   │   ├── LiveMetrics.jsx
+│   │   ├── ChartsDashboard.jsx
+│   │   ├── DeploymentLogs.jsx
+│   │   └── Footer.jsx
+│   ├── data/
+│   │   └── mockPipelineData.js
+│   ├── pages/
+│   │   └── Home.jsx
+│   ├── App.jsx
+│   └── main.jsx
+├── tailwind.config.js
+├── package.json
+└── README.md
+
+🎨 UI / UX REQUIREMENTS (VERY IMPORTANT)
+1️⃣ Hero Section (Premium First Impression)
+
+Dark gradient background (black → indigo → blue)
+
+Animated headline using Framer Motion
+
+Optional rotating 3D cube / server node (Three.js)
+
+Text:
+
+FlowOps
+Visualizing CI/CD Automation in Real Time
+
+2️⃣ Animated CI/CD Pipeline Flow
+
+Display a horizontal pipeline:
+
+Code Push → Build → Test → Deploy
+
+
+Each stage must:
+
+Animate progress
+
+Change color based on status:
+
+🟢 Success
+
+🟡 Running
+
+🔴 Failed
+
+Automatically cycle through states using mock data
+
+3️⃣ Live Metrics Cards
+
+Animated cards showing:
+
+Total Deployments
+
+Success Rate (%)
+
+Failed Builds
+
+Avg Deployment Time
+
+Each card:
+
+Count-up animation
+
+Hover glow
+
+Icon + short description
+
+4️⃣ Charts & Graphs Dashboard
+
+Include:
+
+📈 Line Chart
+
+Deployment frequency over time
+
+🥧 Pie Chart
+
+Success vs Failure ratio
+
+Charts must:
+
+Animate on load
+
+Update automatically from mock data
+
+Look production-grade
+
+5️⃣ Deployment Logs (Terminal Style)
+
+Create a log panel with:
+
+Monospace font
+
+Animated line-by-line logs
+
+Example:
+
+[INFO] Commit pushed to main
+[INFO] Build pipeline started
+[SUCCESS] Tests passed
+[SUCCESS] Deployed to production
+
+🔁 DATA SIMULATION
+
+Store mock CI/CD data in mockPipelineData.js
+
+Use timers (setInterval) to simulate:
+
+Pipeline progress
+
+Metric updates
+
+Log streaming
+
+This should feel live, not static.
+
+🚀 CI/CD CONTEXT (DISPLAY IN UI)
+
+Add a section stating:
+
+“FlowOps mirrors real CI/CD events triggered by GitHub Actions and automated deployment pipelines.”
+
+(No real backend needed.)
+
+🧠 CODE QUALITY RULES
+
+Clean, modular React components
+
+Framer Motion for:
+
+Section transitions
+
+Hover interactions
+
+Loading animations
+
+Tailwind for:
+
+Glassmorphism cards
+
+Responsive layout
+
+Smooth gradients
+
+📄 README.md REQUIREMENTS
+
+Auto-generate a professional README containing:
+
+What FlowOps is
+
+Problem it solves
+
+How CI/CD is visualized
+
+Tech stack
+
+Hackathon explanation
+
+Future enhancements
+
+🚨 CONSTRAINTS
+
+No paid APIs
+
+Must run fully inside Replit
+
+Focus on visual storytelling
+
+App must look like a real SaaS dashboard
+
+✅ FINAL EXPECTATION
+
+At the end:
+
+FlowOps looks like a premium DevOps product
+
+Judges instantly understand automated deployment
+
+Project is ~70% complete, ready for final polish
