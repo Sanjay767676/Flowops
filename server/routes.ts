@@ -9,33 +9,68 @@ export async function registerRoutes(
 ): Promise<Server> {
 
   // API Routes
+  // Note: In development, client uses client-side pipeline engine, so these routes are optional
   app.get(api.pipeline.latest.path, async (req, res) => {
-    const data = await storage.getLatestPipelineRun();
-    if (!data) {
-      // Create initial run if none exists
-      const run = await storage.createPipelineRun("pending");
-      const steps = ["Code Push", "Build", "Test", "Deploy"];
-      for (const name of steps) {
-        await storage.createPipelineStep({ runId: run.id, name, status: "pending", duration: 0 });
+    try {
+      const data = await storage.getLatestPipelineRun();
+      if (!data) {
+        // Create initial run if none exists
+        const run = await storage.createPipelineRun("pending");
+        const steps = ["Code Push", "Build", "Test", "Deploy"];
+        for (const name of steps) {
+          await storage.createPipelineStep({ runId: run.id, name, status: "pending", duration: 0 });
+        }
+        return res.json({ run, steps: await storage.getPipelineSteps(run.id) });
       }
-      return res.json({ run, steps: await storage.getPipelineSteps(run.id) });
+      res.json(data);
+    } catch (error) {
+      // In development with client-side simulation, return empty data if DB unavailable
+      if (process.env.NODE_ENV === "development") {
+        console.warn("Database unavailable, returning empty pipeline data (client-side simulation active)");
+        res.json({ run: { id: 0, status: "pending" }, steps: [] });
+      } else {
+        throw error;
+      }
     }
-    res.json(data);
   });
 
   app.get(api.pipeline.metrics.path, async (req, res) => {
-    await storage.initializeMetrics();
-    const metrics = await storage.getMetrics();
-    res.json(metrics);
+    try {
+      await storage.initializeMetrics();
+      const metrics = await storage.getMetrics();
+      res.json(metrics);
+    } catch (error) {
+      // In development with client-side simulation, return empty metrics if DB unavailable
+      if (process.env.NODE_ENV === "development") {
+        console.warn("Database unavailable, returning empty metrics (client-side simulation active)");
+        res.json([]);
+      } else {
+        throw error;
+      }
+    }
   });
 
   app.get(api.pipeline.logs.path, async (req, res) => {
-    const logs = await storage.getLogs();
-    res.json(logs);
+    try {
+      const logs = await storage.getLogs();
+      res.json(logs);
+    } catch (error) {
+      // In development with client-side simulation, return empty logs if DB unavailable
+      if (process.env.NODE_ENV === "development") {
+        console.warn("Database unavailable, returning empty logs (client-side simulation active)");
+        res.json([]);
+      } else {
+        throw error;
+      }
+    }
   });
 
-  // Simulation Loop
-  startSimulation();
+  // Simulation Loop - only start if not in development mode (client handles simulation)
+  if (process.env.NODE_ENV !== "development") {
+    startSimulation();
+  } else {
+    console.log("✓ Client-side pipeline simulation active - server simulation disabled");
+  }
 
   return httpServer;
 }

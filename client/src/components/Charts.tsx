@@ -1,16 +1,28 @@
+// Real-time chart components
+// In production, these would receive data via WebSocket or Server-Sent Events
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from "recharts";
-
-const data = [
-  { time: "09:00", success: 85, latency: 120 },
-  { time: "10:00", success: 88, latency: 132 },
-  { time: "11:00", success: 92, latency: 101 },
-  { time: "12:00", success: 90, latency: 145 },
-  { time: "13:00", success: 95, latency: 98 },
-  { time: "14:00", success: 89, latency: 112 },
-  { time: "15:00", success: 94, latency: 89 },
-];
+import { useChartData } from "@/hooks/use-pipeline";
+import { useEffect, useState } from "react";
 
 export function DeploymentFrequencyChart() {
+  const chartData = useChartData();
+  const [displayData, setDisplayData] = useState<Array<{ time: string; success: number; latency: number }>>([]);
+
+  // Smoothly update chart data with animation
+  useEffect(() => {
+    if (chartData.length > 0) {
+      setDisplayData([...chartData]);
+    } else {
+      // Initialize with empty data if no data yet
+      setDisplayData([]);
+    }
+  }, [chartData]);
+
+  // Ensure we have at least some data points for the chart
+  const data = displayData.length > 0 ? displayData : [
+    { time: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }), success: 0, latency: 0 }
+  ];
+
   return (
     <div className="h-[250px] w-full">
       <ResponsiveContainer width="100%" height="100%">
@@ -30,6 +42,7 @@ export function DeploymentFrequencyChart() {
             axisLine={false}
           />
           <YAxis 
+            domain={[0, 100]}
             stroke="rgba(255,255,255,0.3)" 
             tick={{fontSize: 12}} 
             tickLine={false}
@@ -49,7 +62,9 @@ export function DeploymentFrequencyChart() {
             stroke="hsl(var(--primary))" 
             strokeWidth={2}
             fillOpacity={1} 
-            fill="url(#colorSuccess)" 
+            fill="url(#colorSuccess)"
+            animationDuration={300}
+            isAnimationActive={true}
           />
         </AreaChart>
       </ResponsiveContainer>
@@ -58,6 +73,24 @@ export function DeploymentFrequencyChart() {
 }
 
 export function LatencyChart() {
+  const chartData = useChartData();
+  const [displayData, setDisplayData] = useState<Array<{ time: string; success: number; latency: number }>>([]);
+
+  // Smoothly update chart data with animation
+  useEffect(() => {
+    if (chartData.length > 0) {
+      setDisplayData([...chartData]);
+    } else {
+      // Initialize with empty data if no data yet
+      setDisplayData([]);
+    }
+  }, [chartData]);
+
+  // Ensure we have at least some data points for the chart
+  const data = displayData.length > 0 ? displayData : [
+    { time: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }), success: 0, latency: 0 }
+  ];
+
   return (
     <div className="h-[250px] w-full">
       <ResponsiveContainer width="100%" height="100%">
@@ -71,6 +104,7 @@ export function LatencyChart() {
             axisLine={false}
           />
           <YAxis 
+            domain={[0, 200]}
             stroke="rgba(255,255,255,0.3)" 
             tick={{fontSize: 12}} 
             tickLine={false}
@@ -91,6 +125,8 @@ export function LatencyChart() {
             strokeWidth={2}
             dot={{ r: 3, fill: '#10b981', strokeWidth: 0 }}
             activeDot={{ r: 6, strokeWidth: 0 }}
+            animationDuration={300}
+            isAnimationActive={true}
           />
         </LineChart>
       </ResponsiveContainer>

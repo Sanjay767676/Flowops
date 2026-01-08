@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Terminal, Clock, AlertCircle, CheckCircle } from "lucide-react";
+import { Terminal, Clock, AlertCircle, CheckCircle, Loader2 } from "lucide-react";
 import type { Log } from "@shared/schema";
 import { cn } from "@/lib/utils";
 
@@ -78,6 +78,3 @@ export function LogViewer({ logs }: LogViewerProps) {
     </div>
   );
 }
-
-// Helper needed for empty state icon
-import { Loader2 } from "lucide-react";
