@@ -78,7 +78,7 @@ export default function Dashboard() {
               <DropdownMenuContent align="end" className="w-56 bg-popover border-white/10">
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">John Doe</p>
+                    <p className="text-sm font-medium leading-none">Tharani_</p>
                     <p className="text-xs leading-none text-muted-foreground">john.doe@example.com</p>
                   </div>
                 </DropdownMenuLabel>
