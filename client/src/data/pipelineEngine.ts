@@ -98,6 +98,9 @@ class PipelineEngine {
     this.state = this.initializeState();
     // Initialize chart with a few data points
     this.initializeChartData();
+    // Notify any existing listeners of initial state
+    this.notifyListeners();
+    // Start the pipeline cycle
     this.start();
   }
 
@@ -176,8 +179,8 @@ class PipelineEngine {
 
   subscribe(listener: (state: PipelineState) => void): () => void {
     this.listeners.add(listener);
-    // Immediately notify new subscriber
-    listener(this.state);
+    // Immediately notify new subscriber with current state
+    listener({ ...this.state });
     // Return unsubscribe function
     return () => {
       this.listeners.delete(listener);
@@ -185,7 +188,9 @@ class PipelineEngine {
   }
 
   private notifyListeners() {
-    this.listeners.forEach((listener) => listener(this.state));
+    // Create a new state object to ensure React detects changes
+    const stateCopy = { ...this.state };
+    this.listeners.forEach((listener) => listener(stateCopy));
   }
 
   private start() {
@@ -308,11 +313,10 @@ class PipelineEngine {
   }
 
   private updateStepStatus(index: number, status: StepStatus, duration: number | null) {
-    this.state.steps[index] = {
-      ...this.state.steps[index],
-      status,
-      duration,
-    };
+    // Create new steps array to ensure React detects changes
+    this.state.steps = this.state.steps.map((step, i) => 
+      i === index ? { ...step, status, duration } : step
+    );
     this.notifyListeners();
   }
 
@@ -325,6 +329,7 @@ class PipelineEngine {
     };
     
     // Keep only last 50 logs for performance
+    // Create new array to ensure React detects changes
     this.state.logs = [...this.state.logs, log].slice(-50);
     this.notifyListeners();
   }
