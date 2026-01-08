@@ -367,7 +367,7 @@ class PipelineEngine {
     this.state.metrics[2] = {
       ...this.state.metrics[2],
       value: String(this.state.failedDeployments),
-      trend: failuresChange > 0 ? `+${failuresChange}` : failuresChange < 0 ? `${failuresChange}` : undefined,
+      trend: failuresChange > 0 ? `+${failuresChange}` : failuresChange < 0 ? `${failuresChange}` : null,
     };
 
     this.state.metrics[3] = {
