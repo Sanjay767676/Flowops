@@ -1,15 +1,50 @@
 import { motion } from "framer-motion";
-import { GitBranch, Box, Activity, Layers, Server } from "lucide-react";
+import { GitBranch, Box, Activity, Layers, Server, User, Settings as SettingsIcon, LogOut } from "lucide-react";
+import { Link, useLocation } from "wouter";
 import { usePipeline, useMetrics, useLogs } from "@/hooks/use-pipeline";
 import { PipelineVisualizer } from "@/components/PipelineVisualizer";
 import { MetricCard } from "@/components/MetricCard";
 import { LogViewer } from "@/components/LogViewer";
 import { DeploymentFrequencyChart, LatencyChart } from "@/components/Charts";
+import { getPipelineEngine } from "@/data/pipelineEngine";
+import { useToast } from "@/hooks/use-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function Dashboard() {
   const { data: pipelineData, isLoading: isPipelineLoading } = usePipeline();
   const { data: metricsData, isLoading: isMetricsLoading } = useMetrics();
   const { data: logsData } = useLogs();
+  const [location] = useLocation();
+  const { toast } = useToast();
+
+  const handleTriggerDeploy = () => {
+    const engine = getPipelineEngine();
+    engine.triggerDeployment();
+    toast({
+      title: "Deployment Triggered",
+      description: "A new deployment pipeline has been started.",
+    });
+    // Scroll to top to see the new deployment
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleViewHistory = () => {
+    // Scroll to the logs section
+    const logsSection = document.querySelector('[data-section="logs"]');
+    if (logsSection) {
+      logsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      // Fallback: scroll to bottom where logs typically are
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    }
+  };
 
   return (
     <div className="min-h-screen pb-20">
@@ -25,12 +60,56 @@ export default function Dashboard() {
             </span>
           </div>
           <div className="flex items-center gap-6 text-sm font-medium text-muted-foreground">
-            <a href="#" className="text-foreground hover:text-primary transition-colors">Overview</a>
-            <a href="#" className="hover:text-primary transition-colors">Deployments</a>
-            <a href="#" className="hover:text-primary transition-colors">Settings</a>
-            <div className="w-8 h-8 rounded-full bg-white/10 border border-white/10 flex items-center justify-center">
-              <span className="text-xs text-white">JD</span>
-            </div>
+            <Link href="/" className={location === "/" ? "text-foreground hover:text-primary transition-colors" : "hover:text-primary transition-colors"}>
+              Overview
+            </Link>
+            <Link href="/deployments" className={location === "/deployments" ? "text-foreground hover:text-primary transition-colors" : "hover:text-primary transition-colors"}>
+              Deployments
+            </Link>
+            <Link href="/settings" className={location === "/settings" ? "text-foreground hover:text-primary transition-colors" : "hover:text-primary transition-colors"}>
+              Settings
+            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="w-8 h-8 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition-colors cursor-pointer outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-transparent">
+                  <span className="text-xs text-white font-medium">JD</span>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 bg-popover border-white/10">
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">John Doe</p>
+                    <p className="text-xs leading-none text-muted-foreground">john.doe@example.com</p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/profile" className="cursor-pointer">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/settings" className="cursor-pointer">
+                    <SettingsIcon className="mr-2 h-4 w-4" />
+                    <span>Settings</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem 
+                  className="cursor-pointer text-red-500 focus:text-red-500"
+                  onClick={() => {
+                    toast({
+                      title: "Logged out",
+                      description: "You have been successfully logged out.",
+                    });
+                  }}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </nav>
@@ -55,12 +134,15 @@ export default function Dashboard() {
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <button className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-sm font-medium hover:bg-white/10 transition-colors">
+              <button 
+                onClick={handleViewHistory}
+                className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-sm font-medium hover:bg-white/10 transition-colors"
+              >
                 View History
               </button>
               <button 
+                onClick={handleTriggerDeploy}
                 className="px-6 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-lg shadow-primary/25 transition-all hover:-translate-y-0.5 active:translate-y-0"
-                onClick={() => alert("This would trigger a manual deployment")}
               >
                 Trigger Deploy
               </button>
@@ -131,7 +213,7 @@ export default function Dashboard() {
           </div>
 
           {/* Right Column: Logs */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1" data-section="logs">
             <div className="sticky top-24">
                <LogViewer logs={logsData || []} />
                
