@@ -21,8 +21,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build application
-        run: npm run build
+      - name: Build client application
+        run: npm run build:client
 
       - name: CI completed
         run: echo "FlowOps CI pipeline completed successfully"
