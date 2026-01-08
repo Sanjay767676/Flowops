@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { PipelineProvider } from "@/contexts/PipelineContext";
 import Dashboard from "@/pages/Dashboard";
 import Deployments from "@/pages/Deployments";
+import Settings from "@/pages/Settings";
 import NotFound from "@/pages/not-found";
 
 function Router() {
