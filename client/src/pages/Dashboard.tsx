@@ -28,7 +28,7 @@ export default function Dashboard() {
     const engine = getPipelineEngine();
     engine.triggerDeployment();
     toast({
-      title: "Deployment---Triggered",
+      title: "Deployment vanakam -Triggered",
       description: "A new deployment pipeline has been started.",
     });
     // Scroll to top to see the new deployment
