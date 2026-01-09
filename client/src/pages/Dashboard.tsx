@@ -78,8 +78,8 @@ export default function Dashboard() {
               <DropdownMenuContent align="end" className="w-56 bg-popover border-white/10">
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">veerakumar_</p>
-                    <p className="text-xs leading-none text-muted-foreground">vignesh@example.com</p>
+                    <p className="text-sm font-medium leading-none">tharani</p>
+                    <p className="text-xs leading-none text-muted-foreground">tharani@example.com</p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
